@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-34RTSHEPXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-34RTSHEPXM');
+</script>
+<title>জেলে সাথী — সাগরের আগাম অবস্থা</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E2B3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="জেলে সাথী">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@500;700;900&family=Noto+Sans+Bengali:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --bg-deep:#071C2C; --bg-panel:#0E2B3E; --bg-panel-2:#123449;
+    --teal:#2FA8A0; --sand:#E8B95C;
+    --text-light:#EAF4F2; --text-muted:#8FB0B4;
+    --danger:#E85A3E; --caution:#E8B95C; --safe:#4FCB8F;
+    --line: rgba(234,244,242,0.10);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ background:var(--bg-deep); color:var(--text-light); font-family:'Noto Sans Bengali',sans-serif; min-height:100vh; -webkit-font-smoothing:antialiased; }
+  body{ background-image:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(47,168,160,0.16), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(232,185,92,0.08), transparent 55%); }
+  .wrap{ max-width:720px; margin:0 auto; padding:20px 16px 60px; }
+
+  .brand{ text-align:center; padding:22px 0 18px; }
+  .brand-name{ font-family:'Noto Serif Bengali',serif; font-weight:900; font-size:30px; color:var(--text-light); display:flex; align-items:center; justify-content:center; gap:8px; }
+  .brand-slogan{ margin-top:6px; font-size:13.5px; color:var(--sand); font-weight:500; letter-spacing:.01em; }
+
+  .eyebrow{ display:flex; align-items:center; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.06em; color:var(--text-muted); padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:18px; flex-wrap:wrap; gap:6px; }
+  .eyebrow b{ color:var(--sand); font-weight:600; }
+
+  .loc-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:18px; scrollbar-width:none; }
+  .loc-row::-webkit-scrollbar{ display:none; }
+  .loc-chip{ flex:0 0 auto; padding:9px 16px; border-radius:100px; border:1px solid var(--line); background:var(--bg-panel); color:var(--text-muted); font-size:14px; font-weight:500; cursor:pointer; transition:all .18s ease; white-space:nowrap; }
+  .loc-chip:hover{ border-color:rgba(47,168,160,.5); color:var(--text-light); }
+  .loc-chip.active{ background:var(--teal); color:#04211D; border-color:var(--teal); font-weight:700; }
+  .loc-btn{ flex:0 0 auto; padding:9px 14px; border-radius:100px; border:1px dashed var(--line); background:transparent; color:var(--sand); font-size:13px; font-weight:600; cursor:pointer; }
+
+  /* storm banner */
+  .storm-banner{
+    display:none; align-items:center; gap:12px;
+    padding:14px 16px; border-radius:14px; margin-bottom:16px;
+    background:rgba(232,90,62,0.14); border:1px solid rgba(232,90,62,0.4);
+  }
+  .storm-banner.show{ display:flex; }
+  .storm-banner .ic{ font-size:26px; flex:0 0 auto; }
+  .storm-banner .tx{ font-size:13.5px; line-height:1.5; }
+  .storm-banner .tx b{ color:var(--danger); font-size:14.5px; }
+
+  .hero{ position:relative; border-radius:22px; background:linear-gradient(180deg,var(--bg-panel-2),var(--bg-panel)); border:1px solid var(--line); overflow:hidden; margin-bottom:16px; }
+  .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; padding:24px 24px 0; position:relative; z-index:2; }
+  .status-label{ font-family:'Noto Serif Bengali',serif; font-weight:900; font-size:40px; line-height:1.05; letter-spacing:-.01em; }
+  .status-label.safe{ color:var(--safe); } .status-label.caution{ color:var(--caution); } .status-label.danger{ color:var(--danger); }
+  .status-sub{ margin-top:8px; font-size:14px; color:var(--text-muted); max-width:270px; line-height:1.55; }
+  .place-name{ font-family:'Noto Serif Bengali',serif; font-weight:700; font-size:19px; text-align:right; }
+  .place-time{ font-size:11.5px; color:var(--text-muted); text-align:right; margin-top:4px; font-family:'JetBrains Mono',monospace; }
+
+  .gauge-zone{ position:relative; height:150px; margin-top:14px; }
+  .gauge-zone svg{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .wave-readout{ position:absolute; left:24px; bottom:14px; z-index:3; font-family:'JetBrains Mono',monospace; }
+  .wave-readout .num{ font-size:30px; font-weight:700; color:var(--text-light); }
+  .wave-readout .unit{ font-size:12px; color:var(--text-muted); margin-left:4px; }
+  .wave-readout .lbl{ font-size:10.5px; color:var(--text-muted); letter-spacing:.05em; margin-bottom:2px; }
+
+  .data-strip{ display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); }
+  .data-cell{ padding:14px 10px; border-right:1px solid var(--line); text-align:center; }
+  .data-cell:last-child{ border-right:none; }
+  .data-cell .lbl{ font-size:10.5px; color:var(--text-muted); margin-bottom:6px; }
+  .data-cell .val{ font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:600; color:var(--text-light); }
+  .data-cell .val span{ font-size:10.5px; color:var(--text-muted); font-weight:500; display:block; }
+
+  .advice-bar{ padding:14px 24px 18px; font-size:14px; line-height:1.6; border-top:1px solid var(--line); }
+
+  .section-title{ font-family:'Noto Serif Bengali',serif; font-weight:700; font-size:16px; color:var(--text-light); margin:22px 0 10px 2px; display:flex; align-items:center; gap:8px; }
+
+  .forecast{ display:grid; grid-template-columns:repeat(5,1fr); gap:7px; }
+  .fc-cell{ background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:11px 5px; text-align:center; }
+  .fc-cell .day{ font-size:11.5px; color:var(--text-muted); margin-bottom:7px; }
+  .fc-dot{ width:9px; height:9px; border-radius:50%; margin:0 auto 7px; }
+  .fc-dot.safe{ background:var(--safe); } .fc-dot.caution{ background:var(--caution); } .fc-dot.danger{ background:var(--danger); }
+  .fc-cell .wv{ font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; }
+  .fc-cell .wd{ font-size:10px; color:var(--text-muted); margin-top:2px; }
+
+  /* GPS card */
+  .gps-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  .gps-status{ display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--text-muted); margin-bottom:14px; }
+  .gps-dot{ width:10px; height:10px; border-radius:50%; background:var(--text-muted); flex:0 0 auto; }
+  .gps-dot.on{ background:var(--safe); box-shadow:0 0 0 4px rgba(79,203,143,.18); }
+  .gps-btn{ width:100%; padding:12px; border-radius:12px; border:1px solid rgba(47,168,160,.5); background:rgba(47,168,160,.12); color:var(--teal); font-weight:700; font-size:14px; margin-bottom:14px; }
+  .gps-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .gps-link{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 8px; border-radius:12px; background:var(--bg-panel-2); border:1px solid var(--line); text-decoration:none; color:var(--text-light); font-size:12.5px; font-weight:600; text-align:center; opacity:.5; pointer-events:none; }
+  .gps-link.active{ opacity:1; pointer-events:auto; }
+  .gps-link .em{ font-size:22px; }
+
+  /* safe route map */
+  .route-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:16px; }
+  .route-intro{ font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:12px; }
+  #safetyMap{ width:100%; height:260px; border-radius:12px; overflow:hidden; display:none; border:1px solid var(--line); }
+  .legend{ display:flex; gap:14px; margin-top:10px; font-size:12px; color:var(--text-muted); flex-wrap:wrap; }
+  .legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .route-info{ margin-top:12px; padding:12px 14px; border-radius:12px; background:var(--bg-panel-2); border:1px solid var(--line); font-size:13px; line-height:1.6; display:none; }
+  .route-info b{ color:var(--safe); }
+  .route-info.warn b{ color:var(--danger); }
+  .directions-btn{ display:inline-block; margin-top:10px; padding:10px 16px; border-radius:10px; background:var(--teal); color:#04211D; font-weight:700; font-size:13.5px; text-decoration:none; }
+
+  /* tide card */
+  .tide-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:18px; font-size:13.5px; line-height:1.7; color:var(--text-muted); }
+  .tide-card a{ color:var(--teal); font-weight:600; text-decoration:none; }
+
+  /* emergency */
+  .em-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .em-card{ display:flex; align-items:center; gap:12px; padding:14px 14px; border-radius:14px; background:var(--bg-panel); border:1px solid var(--line); text-decoration:none; color:var(--text-light); }
+  .em-card .em-ic{ font-size:24px; flex:0 0 auto; }
+  .em-card .em-num{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; }
+  .em-card .em-lbl{ font-size:11.5px; color:var(--text-muted); }
+  .em-card.primary{ background:rgba(232,90,62,0.12); border-color:rgba(232,90,62,.4); }
+  .em-card.primary .em-num{ color:var(--danger); }
+
+  /* AI summary */
+  .ai-summary{ margin:0 24px 14px; padding:12px 14px; border-radius:12px; background:rgba(47,168,160,0.10); border:1px solid rgba(47,168,160,0.3); font-size:13px; line-height:1.6; display:flex; gap:9px; align-items:flex-start; }
+  .ai-summary .ic{ font-size:16px; flex:0 0 auto; }
+
+  /* voice assistant */
+  .voice-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:16px; }
+  .voice-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .voice-chip{ padding:9px 14px; border-radius:100px; border:1px solid rgba(47,168,160,.4); background:rgba(47,168,160,.10); color:var(--teal); font-size:13px; font-weight:600; }
+  .voice-answer{ display:none; padding:13px 15px; border-radius:12px; background:var(--bg-panel-2); border:1px solid var(--line); font-size:14px; line-height:1.6; margin-top:4px; }
+  .voice-answer.show{ display:block; }
+  .voice-answer .replay{ margin-top:8px; display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:8px; background:rgba(47,168,160,.15); color:var(--teal); font-size:12px; font-weight:600; }
+
+  /* fish species guide */
+  .fish-grid{ display:flex; flex-direction:column; gap:10px; }
+  .fish-item{ background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px; display:flex; gap:14px; }
+  .fish-item .fi{ font-size:32px; flex:0 0 auto; }
+  .fish-name{ font-weight:700; font-size:15px; color:var(--text-light); }
+  .fish-sci{ font-size:11.5px; color:var(--text-muted); font-style:italic; margin-bottom:5px; }
+  .fish-meta{ font-size:12.5px; color:var(--text-muted); line-height:1.6; }
+  .fish-tag{ display:inline-block; padding:2px 8px; border-radius:100px; font-size:10.5px; font-weight:700; margin-top:6px; }
+  .fish-tag.ban{ background:rgba(232,90,62,.15); color:var(--danger); }
+  .fish-tag.ok{ background:rgba(79,203,143,.15); color:var(--safe); }
+
+  /* first aid guide */
+  .aid-list{ display:flex; flex-direction:column; gap:8px; }
+  .aid-item{ background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .aid-head{ display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; }
+  .aid-head .ic{ font-size:22px; flex:0 0 auto; }
+  .aid-head .tt{ flex:1; font-weight:700; font-size:14.5px; }
+  .aid-head .arrow{ color:var(--text-muted); font-size:13px; transition:transform .2s ease; }
+  .aid-item.open .arrow{ transform:rotate(180deg); }
+  .aid-body{ display:none; padding:0 16px 16px 50px; font-size:13px; line-height:1.75; color:var(--text-muted); }
+  .aid-item.open .aid-body{ display:block; }
+  .aid-body ol{ padding-left:18px; }
+  .aid-body b{ color:var(--text-light); }
+  .aid-disclaimer{ margin-top:12px; padding:11px 13px; border-radius:10px; background:rgba(232,185,92,.08); border:1px solid rgba(232,185,92,.25); font-size:12px; color:var(--text-muted); line-height:1.6; }
+
+  /* checklist */
+  .checklist-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  .checklist-progress{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .checklist-bar{ flex:1; height:8px; border-radius:100px; background:var(--bg-panel-2); overflow:hidden; }
+  .checklist-bar-fill{ height:100%; background:var(--safe); border-radius:100px; transition:width .25s ease; width:0%; }
+  .checklist-pct{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-muted); flex:0 0 auto; }
+  .checklist-item{ display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line); cursor:pointer; }
+  .checklist-item:last-of-type{ border-bottom:none; }
+  .checklist-box{ width:22px; height:22px; border-radius:7px; border:1.5px solid var(--line); flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .checklist-item.checked .checklist-box{ background:var(--safe); border-color:var(--safe); color:#04211D; }
+  .checklist-item.checked .checklist-label{ color:var(--text-muted); text-decoration:line-through; }
+  .checklist-label{ font-size:14px; color:var(--text-light); }
+  .checklist-reset{ margin-top:14px; width:100%; padding:10px; border-radius:10px; border:1px dashed var(--line); background:transparent; color:var(--text-muted); font-size:13px; }
+
+  /* ban calendar */
+  .ban-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:6px; }
+  .ban-item{ display:flex; gap:12px; padding:14px 12px; border-bottom:1px solid var(--line); }
+  .ban-item:last-child{ border-bottom:none; }
+  .ban-status-dot{ width:11px; height:11px; border-radius:50%; flex:0 0 auto; margin-top:4px; }
+  .ban-status-dot.active{ background:var(--danger); box-shadow:0 0 0 4px rgba(232,90,62,.18); }
+  .ban-status-dot.inactive{ background:var(--text-muted); opacity:.5; }
+  .ban-title{ font-size:14.5px; font-weight:700; color:var(--text-light); margin-bottom:3px; }
+  .ban-date{ font-size:12.5px; color:var(--text-muted); margin-bottom:4px; }
+  .ban-state{ font-size:12.5px; font-weight:600; }
+  .ban-state.active{ color:var(--danger); }
+  .ban-state.inactive{ color:var(--text-muted); }
+
+  /* trend chart */
+  .trend-wrap{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:16px 14px; margin-top:14px; }
+  .trend-title{ font-size:12.5px; color:var(--text-muted); margin-bottom:8px; }
+  .trend-wrap svg{ width:100%; height:auto; display:block; }
+  .trend-legend{ display:flex; gap:14px; margin-top:6px; font-size:11.5px; color:var(--text-muted); }
+  .trend-legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .trend-legend i{ width:14px; height:2.5px; display:inline-block; border-radius:2px; }
+
+  /* install banner */
+  .install-banner{ display:none; align-items:center; gap:12px; padding:14px 16px; border-radius:14px; margin-bottom:16px; background:rgba(47,168,160,0.14); border:1px solid rgba(47,168,160,0.4); }
+  .install-banner.show{ display:flex; }
+  .install-banner .ic{ font-size:24px; flex:0 0 auto; }
+  .install-banner .tx{ font-size:13px; line-height:1.5; flex:1; }
+  .install-banner .tx b{ display:block; font-size:14px; margin-bottom:2px; }
+  .install-banner button{ flex:0 0 auto; padding:9px 14px; border-radius:10px; background:var(--teal); color:#04211D; font-weight:700; font-size:13px; border:none; }
+  .install-banner .close-x{ background:transparent; color:var(--text-muted); padding:4px 8px; font-size:16px; }
+
+  /* print card */
+  .print-btn{ width:100%; padding:12px; border-radius:12px; background:rgba(232,185,92,.14); border:1px solid rgba(232,185,92,.4); color:var(--sand); font-weight:700; font-size:14px; }
+  #printCard{ display:none; }
+  @media print{
+    body *{ visibility:hidden; }
+    #printCard, #printCard *{ visibility:visible; }
+    #printCard{ display:block; position:fixed; top:0; left:0; width:100%; background:#fff; color:#000; padding:24px; }
+    .pc-title{ font-size:26px; font-weight:900; text-align:center; margin-bottom:4px; }
+    .pc-slogan{ text-align:center; font-size:13px; margin-bottom:20px; }
+    .pc-row{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:2px solid #000; font-size:18px; font-weight:700; }
+    .pc-row .n{ font-size:24px; }
+    .pc-section{ margin-top:18px; font-size:13px; line-height:1.7; }
+    .pc-checklist{ margin-top:14px; font-size:13px; }
+    .pc-checklist div{ padding:3px 0; }
+  }
+
+  /* offline banner */
+  .offline-banner{ display:none; align-items:center; gap:10px; padding:12px 16px; border-radius:14px; margin-bottom:16px; background:rgba(143,176,180,0.14); border:1px solid rgba(143,176,180,0.35); font-size:13px; }
+  .offline-banner.show{ display:flex; }
+
+  /* voice button */
+  .voice-btn{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:8px 14px; border-radius:10px; background:rgba(47,168,160,.15); border:1px solid rgba(47,168,160,.4); color:var(--teal); font-size:13px; font-weight:600; }
+
+  /* SOS */
+  .sos-card{ background:linear-gradient(180deg, rgba(232,90,62,0.10), var(--bg-panel)); border:1px solid rgba(232,90,62,.35); border-radius:16px; padding:18px; }
+  .sos-input-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .sos-input-row input{ flex:1; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg-panel-2); color:var(--text-light); font-size:14px; }
+  .sos-input-row button{ padding:0 16px; border-radius:10px; border:1px solid var(--line); background:var(--bg-panel-2); color:var(--text-muted); font-size:13px; font-weight:600; }
+  .sos-btn{ width:100%; padding:18px; border-radius:16px; background:var(--danger); color:#fff; font-weight:900; font-size:19px; font-family:'Noto Serif Bengali',serif; box-shadow:0 6px 20px rgba(232,90,62,0.35); }
+  .sos-result{ margin-top:14px; display:none; }
+  .sos-msg{ padding:12px 14px; border-radius:12px; background:var(--bg-panel-2); border:1px solid var(--line); font-size:13px; line-height:1.6; margin-bottom:10px; word-break:break-word; }
+  .sos-actions{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .sos-actions a, .sos-actions button{ display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none; border:none; }
+  .sos-actions .wa{ background:#25D366; color:#04210F; }
+  .sos-actions .smsb{ background:var(--bg-panel-2); color:var(--text-light); border:1px solid var(--line); }
+  .sos-actions .shr{ background:var(--teal); color:#04211D; grid-column:1/3; }
+  .sos-actions .cpy{ background:transparent; color:var(--text-muted); border:1px dashed var(--line); grid-column:1/3; }
+
+  /* compass */
+  .compass-card{ background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:18px; text-align:center; }
+  .compass-intro{ font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:14px; }
+  .compass-wrap{ position:relative; width:180px; height:180px; margin:0 auto 12px; border-radius:50%; background:var(--bg-panel-2); border:1px solid var(--line); }
+  .compass-rose{ position:relative; width:100%; height:100%; transition:transform .15s ease-out; }
+  .compass-rose .n-label{ position:absolute; top:8px; left:50%; transform:translateX(-50%); color:var(--danger); font-weight:700; font-size:13px; }
+  .compass-needle{ position:absolute; left:50%; top:50%; width:3px; height:70px; background:linear-gradient(180deg,var(--text-light),var(--text-muted)); transform-origin:bottom center; transform:translate(-50%,-100%); }
+  .compass-target{ position:absolute; left:50%; top:50%; width:3px; height:60px; background:var(--safe); transform-origin:bottom center; transform:translate(-50%,-100%); display:none; }
+  .compass-center-dot{ position:absolute; left:50%; top:50%; width:8px; height:8px; border-radius:50%; background:var(--sand); transform:translate(-50%,-50%); }
+  .compass-heading{ font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--text-light); margin-bottom:6px; }
+  .compass-target-lbl{ font-size:12.5px; color:var(--safe); }
+
+  .disclaimer{ margin-top:22px; padding:14px 16px; border:1px solid rgba(232,185,92,.25); background:rgba(232,185,92,.06); border-radius:12px; font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .disclaimer b{ color:var(--sand); }
+
+  .loading,.err{ padding:50px 20px; text-align:center; color:var(--text-muted); font-size:14px; }
+  .spinner{ width:26px; height:26px; margin:0 auto 14px; border-radius:50%; border:2.5px solid var(--line); border-top-color:var(--teal); animation:spin .8s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  @media (max-width:480px){
+    .status-label{ font-size:32px; }
+    .hero-top{ flex-direction:column; gap:12px; padding:20px 18px 0; }
+    .place-name,.place-time{ text-align:left; }
+    .data-strip{ grid-template-columns:1fr 1fr; }
+    .data-cell:nth-child(3){ border-top:1px solid var(--line); }
+    .data-cell:nth-child(4){ border-top:1px solid var(--line); }
+    .ai-summary{ margin:0 18px 12px; }
+  }
+  @media (prefers-reduced-motion:reduce){ .spinner{animation:none;} * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="brand-name">🐟 জেলে সাথী</div>
+    <div class="brand-slogan">"আগেই তথ্য জানুন, নিরাপদে মাছ ধরুন।"</div>
+  </div>
+
+  <div class="eyebrow">
+    <span>🌊 সাগরের আগাম অবস্থা</span>
+    <span id="clockTag">—</span>
+  </div>
+
+  <div class="install-banner" id="installBanner">
+    <div class="ic">📲</div>
+    <div class="tx" id="installText"><b>হোম স্ক্রিনে ইনস্টল করুন</b>অ্যাপের মতো এক ট্যাপে খুলবে, ইন্টারনেট ছাড়াও শেষ তথ্য দেখা যাবে</div>
+    <button id="installBtn">ইনস্টল</button>
+    <button class="close-x" id="installClose">✕</button>
+  </div>
+
+  <div class="loc-row" id="locRow"></div>
+
+  <div class="offline-banner" id="offlineBanner">
+    📶 <span id="offlineText">অফলাইন — সর্বশেষ জানা তথ্য দেখানো হচ্ছে</span>
+  </div>
+
+  <div class="storm-banner" id="stormBanner">
+    <div class="ic">🚨</div>
+    <div class="tx" id="stormText"></div>
+  </div>
+
+  <div id="content">
+    <div class="loading"><div class="spinner"></div>তথ্য আনা হচ্ছে…</div>
+  </div>
+
+  <div class="section-title">🎙️ ভয়েস অ্যাসিস্টেন্ট</div>
+  <div class="voice-card">
+    <div class="voice-chips">
+      <button class="voice-chip" data-q="safe">আজ যাওয়া নিরাপদ?</button>
+      <button class="voice-chip" data-q="wind">বাতাস কত?</button>
+      <button class="voice-chip" data-q="wave">ঢেউ কত?</button>
+      <button class="voice-chip" data-q="temp">তাপমাত্রা কত?</button>
+      <button class="voice-chip" data-q="tide">জোয়ার-ভাটা কখন?</button>
+      <button class="voice-chip" data-q="trend">সারাদিন কেমন থাকবে?</button>
+    </div>
+    <div class="voice-answer" id="voiceAnswer"></div>
+  </div>
+
+  <div class="section-title">✅ যাত্রার আগে সেফটি চেকলিস্ট</div>
+  <div class="checklist-card">
+    <div class="checklist-progress">
+      <div class="checklist-bar"><div class="checklist-bar-fill" id="checklistBarFill"></div></div>
+      <div class="checklist-pct" id="checklistPct">০%</div>
+    </div>
+    <div id="checklistItems"></div>
+    <button class="checklist-reset" id="checklistReset">🔄 নতুন যাত্রার জন্য রিসেট করুন</button>
+  </div>
+
+  <div class="section-title">🆘 SOS — জরুরি সাহায্য</div>
+  <div class="sos-card">
+    <div class="sos-input-row">
+      <input type="tel" id="sosContact" placeholder="জরুরি নম্বর (যেমন পরিবারের কারো, ঐচ্ছিক)">
+      <button id="sosSaveBtn">সংরক্ষণ</button>
+    </div>
+    <button class="sos-btn" id="sosBtn">🆘 SOS পাঠান</button>
+    <div class="sos-result" id="sosResult">
+      <div class="sos-msg" id="sosMsg"></div>
+      <div class="sos-actions">
+        <a class="wa" id="sosWa" target="_blank">💬 WhatsApp</a>
+        <a class="smsb" id="sosSms">✉️ SMS</a>
+        <button class="shr" id="sosShare">📤 শেয়ার করুন</button>
+        <button class="cpy" id="sosCopy">🔗 বার্তা কপি করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">🧭 কম্পাস</div>
+  <div class="compass-card">
+    <div class="compass-intro">নিরাপদ এলাকার দিক বুঝতে কম্পাস চালু করুন। সঠিক ফলাফলের জন্য "🗺️ মানচিত্র দেখুন" ও GPS চালু করুন।</div>
+    <button class="gps-btn" id="compassBtn" style="margin-bottom:14px;">🧭 কম্পাস চালু করুন</button>
+    <div class="compass-wrap" id="compassWrap" style="display:none;">
+      <div class="compass-rose" id="compassRose">
+        <div class="n-label">N</div>
+        <div class="compass-needle"></div>
+        <div class="compass-target" id="compassTarget"></div>
+        <div class="compass-center-dot"></div>
+      </div>
+    </div>
+    <div class="compass-heading" id="compassHeading" style="display:none;"></div>
+    <div class="compass-target-lbl" id="compassTargetLbl"></div>
+  </div>
+
+  <div class="section-title">📍 GPS দিয়ে নিরাপদ ঘাট ও আশ্রয়কেন্দ্র</div>
+  <div class="gps-card">
+    <div class="gps-status">
+      <div class="gps-dot" id="gpsDot"></div>
+      <span id="gpsStatusText">অবস্থান শনাক্ত করা হয়নি</span>
+    </div>
+    <button class="gps-btn" id="gpsBtn">📍 আমার অবস্থান চালু করুন</button>
+    <div class="gps-grid">
+      <a class="gps-link" id="lnkHarbor" target="_blank"><span class="em">⚓</span>নিকটবর্তী ঘাট</a>
+      <a class="gps-link" id="lnkShelter" target="_blank"><span class="em">🛟</span>আশ্রয়কেন্দ্র</a>
+      <a class="gps-link" id="lnkCoastguard" target="_blank"><span class="em">🚤</span>কোস্ট গার্ড স্টেশন</a>
+      <a class="gps-link" id="lnkHospital" target="_blank"><span class="em">🏥</span>নিকটবর্তী হাসপাতাল</a>
+    </div>
+  </div>
+
+  <div class="section-title">🧭 নিরাপদ পথ ও এলাকা মানচিত্র</div>
+  <div class="route-card">
+    <div class="route-intro">উপকূলের প্রতিটা এলাকার বর্তমান অবস্থা অনুযায়ী মানচিত্রে লাল (বিপদ/সতর্কতা) ও সবুজ (নিরাপদ) রঙে দেখাবে। GPS চালু থাকলে আপনার কাছের নিরাপদ এলাকার দিকও দেখাবে।</div>
+    <button class="gps-btn" id="mapLoadBtn" style="margin-bottom:0;">🗺️ মানচিত্র দেখুন</button>
+    <div id="safetyMap"></div>
+    <div class="legend" id="mapLegend" style="display:none;">
+      <span><i style="background:var(--safe)"></i>নিরাপদ</span>
+      <span><i style="background:var(--caution)"></i>সতর্কতা</span>
+      <span><i style="background:var(--danger)"></i>বিপদ</span>
+    </div>
+    <div class="route-info" id="routeInfo"></div>
+  </div>
+
+  <div class="section-title">🌀 ঘূর্ণিঝড় সতর্ক সংকেত (সরকারি)</div>
+  <div class="tide-card">
+    এই অ্যাপের লাল ব্যানার আবহাওয়ার পূর্বাভাস থেকে <b style="color:var(--sand)">আনুমানিক</b> হিসাব করা — এটা BMD-র সরকারি ঘূর্ণিঝড় সংকেত (যেমন ৩নং, ৪নং, মহাবিপদ সংকেত) নয়। সরকারিভাবে ঘোষিত সংকেত শুধু BMD-ই দিতে পারে।<br><br>
+    ➜ <a href="https://live8.bmd.gov.bd/bn/p/Signals" target="_blank" rel="noopener">BMD-এর লাইভ সতর্ক সংকেত পেজ দেখুন</a>
+  </div>
+
+  <div class="section-title">🌊 জোয়ার-ভাটা</div>
+  <div class="tide-card">
+    সঠিক জোয়ার-ভাটার সময়সূচি এলাকাভেদে ভিন্ন হয়। অনুমান না দিয়ে সরাসরি সরকারি বন্দর কর্তৃপক্ষের তথ্যে নিয়ে যাচ্ছি — এলাকা অনুযায়ী বেছে নিন:<br><br>
+    ➜ <a href="https://cpa.gov.bd/site/page/fa23d38c-affd-4f17-bf2e-945676b9452d" target="_blank" rel="noopener">চট্টগ্রাম বন্দর কর্তৃপক্ষ</a> — কক্সবাজার, পতেঙ্গা, চট্টগ্রাম, হাতিয়া এলাকার জন্য<br>
+    ➜ <a href="https://ppa.gov.bd/site/page/0c26f064-cc40-437a-a667-dc91c078d8f0" target="_blank" rel="noopener">পায়রা বন্দর কর্তৃপক্ষ</a> — কুয়াকাটা, পটুয়াখালী, বরগুনা এলাকার জন্য<br><br>
+    সাইটে সরাসরি PDF আকারে মাসভিত্তিক জোয়ার-ভাটার তালিকা পাওয়া যায়। অন্য এলাকার জন্য স্থানীয় ঘাট/আড়তে খোঁজ নেওয়াই সবচেয়ে নির্ভরযোগ্য।
+  </div>
+
+  <div class="section-title">🚫 মাছ ধরার নিষেধাজ্ঞার ক্যালেন্ডার</div>
+  <div class="ban-card" id="banCalendar"></div>
+
+  <div class="section-title">☎ জরুরি নম্বর</div>
+  <div class="em-grid">
+    <a class="em-card primary" href="tel:999"><span class="em-ic">🆘</span><div><div class="em-num">৯৯৯</div><div class="em-lbl">জাতীয় জরুরি সেবা</div></div></a>
+    <a class="em-card" href="tel:16111"><span class="em-ic">🚤</span><div><div class="em-num">১৬১১১</div><div class="em-lbl">কোস্ট গার্ড</div></div></a>
+    <a class="em-card" href="tel:102"><span class="em-ic">🚒</span><div><div class="em-num">১০২</div><div class="em-lbl">ফায়ার সার্ভিস</div></div></a>
+    <a class="em-card" href="tel:999"><span class="em-ic">🚑</span><div><div class="em-num">৯৯৯</div><div class="em-lbl">অ্যাম্বুলেন্স</div></div></a>
+  </div>
+  <button class="print-btn" id="printCardBtn" style="margin-top:10px;">🖨️ জরুরি নম্বরের কার্ড প্রিন্ট/সেভ করুন</button>
+  <div style="font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.6;">নৌকায় লেমিনেট করে রাখুন — ফোন নষ্ট হলে বা নেটওয়ার্ক না থাকলেও কাজে লাগবে।</div>
+
+  <div id="printCard">
+    <div class="pc-title">🐟 জেলে সাথী — জরুরি নম্বর কার্ড</div>
+    <div class="pc-slogan">"আগেই তথ্য জানুন, নিরাপদে মাছ ধরুন।"</div>
+    <div class="pc-row"><span>জাতীয় জরুরি সেবা</span><span class="n">৯৯৯</span></div>
+    <div class="pc-row"><span>কোস্ট গার্ড</span><span class="n">১৬১১১</span></div>
+    <div class="pc-row"><span>ফায়ার সার্ভিস</span><span class="n">১০২</span></div>
+    <div class="pc-row"><span>অ্যাম্বুলেন্স</span><span class="n">৯৯৯</span></div>
+    <div class="pc-section">
+      <b>বিপদে করণীয়:</b><br>
+      ১. উপরের যেকোনো নম্বরে কল করুন<br>
+      ২. আপনার এলাকার নাম ও দিকনির্দেশনা বলুন (নিকটবর্তী ঘাট/দ্বীপের নাম)<br>
+      ৩. কতজন আছেন ও কী সমস্যা হয়েছে স্পষ্ট করে বলুন<br>
+      ৪. সম্ভব হলে নৌকায় থাকুন, লাইফ জ্যাকেট পরে থাকুন
+    </div>
+    <div class="pc-checklist">
+      <b>যাত্রার আগে চেক করুন:</b>
+      <div>☐ লাইফ জ্যাকেট সবার জন্য</div>
+      <div>☐ পর্যাপ্ত জ্বালানি</div>
+      <div>☐ ফোন পুরোপুরি চার্জ</div>
+      <div>☐ পরিবারকে জানানো হয়েছে</div>
+      <div>☐ আবহাওয়া দেখা হয়েছে</div>
+    </div>
+  </div>
+
+  <div class="section-title">🏥 প্রাথমিক চিকিৎসা নির্দেশিকা</div>
+  <div class="aid-list" id="aidGuide"></div>
+
+  <div class="disclaimer">
+    <b>মনে রাখবেন:</b> এই তথ্য আবহাওয়ার পূর্বাভাসের হিসাব থেকে তৈরি, এটি বাংলাদেশ আবহাওয়া অধিদপ্তরের (BMD) সরকারি সতর্ক সংকেত নয়। ঘাট, আশ্রয়কেন্দ্র ও হাসপাতালের তথ্য Google Maps থেকে লাইভ আনা হয় — এলাকাভেদে ফলাফল সম্পূর্ণ নাও হতে পারে। সাগরে যাওয়ার আগে সবসময় স্থানীয় প্রশাসন বা BMD-র সবশেষ সংকেত যাচাই করুন।
+  </div>
+</div>
+
+<script>
+const LOCATIONS = [
+  {name:"কক্সবাজার", lat:21.4272, lon:92.0058},
+  {name:"পতেঙ্গা, চট্টগ্রাম", lat:22.2352, lon:91.7912},
+  {name:"কুয়াকাটা, পটুয়াখালী", lat:21.8200, lon:90.1200},
+  {name:"হাতিয়া, নোয়াখালী", lat:22.4300, lon:91.1000},
+  {name:"মনপুরা, ভোলা", lat:22.0100, lon:90.9500},
+  {name:"সুন্দরবন, খুলনা", lat:22.0500, lon:89.5500},
+  {name:"বরগুনা", lat:22.0900, lon:90.1100},
+];
+
+const banglaDigits=['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+function toBn(n){ return String(n).replace(/[0-9]/g,d=>banglaDigits[+d]); }
+function fmt1(n){ return toBn(Number(n).toFixed(1)); }
+function fmt0(n){ return toBn(Math.round(n)); }
+const weekdaysBn=['রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র','শনি'];
+
+let activeIndex=0;
+let currentSummary=null; // for voice read-aloud
+let lastData=null; // for voice assistant answers
+const CACHE_KEY='seaConditionLastKnown';
+
+function renderChips(){
+  const row=document.getElementById('locRow'); row.innerHTML='';
+  LOCATIONS.forEach((loc,i)=>{
+    const chip=document.createElement('button');
+    chip.className='loc-chip'+(i===activeIndex?' active':'');
+    chip.textContent=loc.name;
+    chip.onclick=()=>{ activeIndex=i; renderChips(); loadData(loc); };
+    row.appendChild(chip);
+  });
+  const gpsBtn=document.createElement('button');
+  gpsBtn.className='loc-btn'; gpsBtn.textContent='📍 আমার অবস্থান';
+  gpsBtn.onclick=useGeolocationForWeather;
+  row.appendChild(gpsBtn);
+}
+
+function useGeolocationForWeather(){
+  if(!navigator.geolocation) return;
+  if(location.protocol !== 'https:'){ alert('GPS চালাতে হলে সাইটটি https:// দিয়ে খুলতে হবে'); return; }
+  const content=document.getElementById('content');
+  content.innerHTML='<div class="loading"><div class="spinner"></div>অবস্থান শনাক্ত করা হচ্ছে…</div>';
+  navigator.geolocation.getCurrentPosition(
+    pos=>{ activeIndex=-1; renderChips(); loadData({name:'আপনার অবস্থান', lat:pos.coords.latitude, lon:pos.coords.longitude}); },
+    (err)=>{
+      let msg='অবস্থান পাওয়া যায়নি। একটি এলাকা বেছে নিন।';
+      if(err.code===1) msg='❌ অনুমতি দেওয়া হয়নি। ব্রাউজারের ঠিকানা বারের বাম পাশে 🔒 আইকনে চেপে "Location" অনুমতি চালু করুন, তারপর পাতাটি রিলোড করুন।';
+      else if(err.code===2) msg='❌ অবস্থান পাওয়া যায়নি — ফোনের Location/GPS সেটিং চালু আছে কিনা দেখুন।';
+      else if(err.code===3) msg='❌ সময় শেষ হয়ে গেছে — খোলা জায়গায় গিয়ে আবার চেষ্টা করুন।';
+      content.innerHTML=`<div class="err">${msg}</div>`;
+    },
+    {enableHighAccuracy:true, timeout:15000, maximumAge:0}
+  );
+}
+
+function statusFromValues(waveH,windKmh,weathercode,precip){
+  const storm = weathercode>=95;
+  const heavyRain = precip>=10;
+  if (waveH>=2.0 || windKmh>=45 || storm) return 'danger';
+  if (waveH>=1.1 || windKmh>=25 || heavyRain || (weathercode>=61&&weathercode<=82)) return 'caution';
+  return 'safe';
+}
+function statusText(s){ return s==='danger'?'বিপদ':s==='caution'?'সতর্কতা':'নিরাপদ'; }
+function statusAdvice(s){
+  if(s==='danger') return `<b>সাগরে যাওয়া থেকে বিরত থাকুন।</b> পরিস্থিতি ছোট-মাঝারি নৌকার জন্য ঝুঁকিপূর্ণ। উপকূলে অবস্থানরত নৌকাগুলোকে নিরাপদ আশ্রয়ে রাখুন এবং সবশেষ BMD সংকেত অনুসরণ করুন।`;
+  if(s==='caution') return `<b>সতর্কতার সাথে সিদ্ধান্ত নিন।</b> পরিস্থিতি পরিবর্তনশীল — অভিজ্ঞ ও বড় নৌকা সাবধানে যেতে পারে, ছোট নৌকা বা নতুন জেলেদের জন্য আজ ঝুঁকিপূর্ণ হতে পারে।`;
+  return `সমুদ্র পরিস্থিতি তুলনামূলক শান্ত। সাধারণ সতর্কতা মেনে মাছ ধরতে যেতে পারেন — যাওয়ার আগে সবশেষ পূর্বাভাস দেখে নিন।`;
+}
+function windDirLabel(deg){ const dirs=['উত্তর','উত্তর-পূর্ব','পূর্ব','দক্ষিণ-পূর্ব','দক্ষিণ','দক্ষিণ-পশ্চিম','পশ্চিম','উত্তর-পশ্চিম']; return dirs[Math.round(deg/45)%8]; }
+
+function weatherCodeWarning(code, precip){
+  if(code>=95) return {show:true, text:`<b>⚡ আনুমানিক বিপদ সতর্কতা:</b> আবহাওয়ার পূর্বাভাসে বজ্রঝড়/ঘূর্ণিঝড়সদৃশ পরিস্থিতির আশঙ্কা দেখাচ্ছে। এটা BMD-র সরকারি সংকেত নয় — নিচে "ঘূর্ণিঝড় সতর্ক সংকেত" অংশ থেকে সরকারি ঘোষণা যাচাই করুন। সাগরে থাকলে দ্রুত নিরাপদ আশ্রয়ে ফিরুন।`};
+  if(precip>=10) return {show:true, text:`<b>🌧️ ভারী বৃষ্টির সতর্কতা:</b> আজ প্রবল বৃষ্টিপাতের পূর্বাভাস আছে। দৃষ্টিসীমা কমে যেতে পারে, সতর্ক থাকুন।`};
+  return {show:false, text:''};
+}
+
+function waveGaugeSVG(waveH,status){
+  const clamped=Math.max(0,Math.min(waveH,3));
+  const fillPct=22+(clamped/3)*58;
+  const color=status==='danger'?'#E85A3E':status==='caution'?'#E8B95C':'#2FA8A0';
+  const waterY=150-(150*fillPct/100);
+  const amp=status==='danger'?9:status==='caution'?6:3;
+  return `<svg viewBox="0 0 400 150" preserveAspectRatio="none">
+    <defs><linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0.18"/>
+    </linearGradient></defs>
+    <path d="M0,${waterY} C 60,${waterY-amp} 120,${waterY+amp} 200,${waterY} S 340,${waterY+amp} 400,${waterY} L400,150 L0,150 Z" fill="url(#waterGrad)">
+      <animate attributeName="d" values="
+        M0,${waterY} C 60,${waterY-amp} 120,${waterY+amp} 200,${waterY} S 340,${waterY+amp} 400,${waterY} L400,150 L0,150 Z;
+        M0,${waterY} C 60,${waterY+amp} 120,${waterY-amp} 200,${waterY} S 340,${waterY-amp} 400,${waterY} L400,150 L0,150 Z;
+        M0,${waterY} C 60,${waterY-amp} 120,${waterY+amp} 200,${waterY} S 340,${waterY+amp} 400,${waterY} L400,150 L0,150 Z" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <line x1="0" y1="${waterY}" x2="400" y2="${waterY}" stroke="${color}" stroke-width="1.5" stroke-opacity="0.7" stroke-dasharray="4 4"/>
+  </svg>`;
+}
+
+async function loadData(loc){
+  const content=document.getElementById('content');
+  const offlineBanner=document.getElementById('offlineBanner');
+  document.getElementById('stormBanner').classList.remove('show');
+
+  if(!navigator.onLine){
+    const cached = readCache();
+    if(cached){
+      offlineBanner.classList.add('show');
+      document.getElementById('offlineText').textContent = `অফলাইন — সর্বশেষ জানা তথ্য (${cached.locName}, ${cached.ago})`;
+      renderHero(cached.loc, cached.waveH, cached.windKmh, cached.windDeg, cached.temp, cached.precip, cached.wcode, true);
+      return;
+    }
+  }
+  offlineBanner.classList.remove('show');
+  content.innerHTML='<div class="loading"><div class="spinner"></div>তথ্য আনা হচ্ছে…</div>';
+  try{
+    const [marineRes, weatherRes] = await Promise.all([
+      fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wave_height&daily=wave_height_max&timezone=Asia%2FDhaka&forecast_days=5`),
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m,temperature_2m,precipitation,weathercode&daily=wind_speed_10m_max,temperature_2m_max,precipitation_sum&timezone=Asia%2FDhaka&forecast_days=5`)
+    ]);
+    if(!marineRes.ok || !weatherRes.ok) throw new Error('fetch failed');
+    const marine=await marineRes.json();
+    const weather=await weatherRes.json();
+
+    const now=new Date();
+    document.getElementById('clockTag').textContent = now.toLocaleString('bn-BD',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'});
+
+    const hourlyTimes=marine.hourly.time;
+    let idx=0; const nowIso=now.toISOString().slice(0,13);
+    for(let i=0;i<hourlyTimes.length;i++){ if(hourlyTimes[i].slice(0,13)>=nowIso){ idx=i; break; } }
+
+    const waveH=marine.hourly.wave_height[idx] ?? marine.hourly.wave_height[0];
+    const windKmh=weather.hourly.wind_speed_10m[idx] ?? weather.hourly.wind_speed_10m[0];
+    const windDeg=weather.hourly.wind_direction_10m[idx] ?? 0;
+    const temp=weather.hourly.temperature_2m[idx] ?? weather.hourly.temperature_2m[0];
+    const precip=weather.hourly.precipitation[idx] ?? 0;
+    const wcode=weather.hourly.weathercode[idx] ?? 0;
+
+    writeCache(loc, waveH, windKmh, windDeg, temp, precip, wcode);
+    renderHero(loc, waveH, windKmh, windDeg, temp, precip, wcode, false);
+
+    let html2='<div class="section-title">আগামী ৫ দিনের পূর্বাভাস</div><div class="forecast">';
+    const days=marine.daily.time;
+    for(let i=0;i<Math.min(5,days.length);i++){
+      const d=new Date(days[i]+'T00:00:00');
+      const dayLabel=i===0?'আজ':weekdaysBn[d.getDay()];
+      const dw=marine.daily.wave_height_max[i];
+      const dwind=weather.daily.wind_speed_10m_max[i];
+      const dprecip=weather.daily.precipitation_sum[i] ?? 0;
+      const dstatus=statusFromValues(dw,dwind,0,dprecip>=10?10:0);
+      html2 += `<div class="fc-cell"><div class="day">${dayLabel}</div><div class="fc-dot ${dstatus}"></div><div class="wv">${fmt1(dw)}মি</div><div class="wd">${fmt0(dwind)}কিমি/ঘ</div></div>`;
+    }
+    html2 += `</div>`;
+
+    const next24Wave = marine.hourly.wave_height.slice(idx, idx+24);
+    const next24Wind = weather.hourly.wind_speed_10m.slice(idx, idx+24);
+    const next24Times = hourlyTimes.slice(idx, idx+24);
+    html2 += buildTrendChart(next24Times, next24Wave, next24Wind);
+
+    content.insertAdjacentHTML('beforeend', html2);
+
+    const aiText = buildAISummaryText(next24Times, next24Wave, next24Wind, status);
+    const aiBox = document.getElementById('aiSummaryBox');
+    if(aiBox && aiText){
+      document.getElementById('aiSummaryText').textContent = aiText;
+      aiBox.style.display = 'flex';
+      lastData.aiSummary = aiText;
+    }
+  }catch(err){
+    const cached = readCache();
+    if(cached){
+      offlineBanner.classList.add('show');
+      document.getElementById('offlineText').textContent = `ইন্টারনেট সমস্যা — সর্বশেষ জানা তথ্য (${cached.locName}, ${cached.ago})`;
+      renderHero(cached.loc, cached.waveH, cached.windKmh, cached.windDeg, cached.temp, cached.precip, cached.wcode, true);
+    } else {
+      content.innerHTML=`<div class="err">তথ্য আনতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।<br><br><button class="loc-btn" onclick="loadData(LOCATIONS[${activeIndex>=0?activeIndex:0}])" style="margin-top:8px;">আবার চেষ্টা করুন</button></div>`;
+    }
+  }
+}
+
+function writeCache(loc, waveH, windKmh, windDeg, temp, precip, wcode){
+  try{
+    localStorage.setItem(CACHE_KEY, JSON.stringify({loc, waveH, windKmh, windDeg, temp, precip, wcode, ts: Date.now()}));
+  }catch(e){}
+}
+function readCache(){
+  try{
+    const raw=localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    const d=JSON.parse(raw);
+    const mins=Math.round((Date.now()-d.ts)/60000);
+    const ago = mins<60 ? `${toBn(mins)} মিনিট আগে` : `${toBn(Math.round(mins/60))} ঘণ্টা আগে`;
+    return {...d, locName:d.loc.name, ago};
+  }catch(e){ return null; }
+}
+
+function renderHero(loc, waveH, windKmh, windDeg, temp, precip, wcode, isCached){
+  const content=document.getElementById('content');
+  const status=statusFromValues(waveH,windKmh,wcode,precip);
+  const warn=weatherCodeWarning(wcode,precip);
+  if(warn.show && !isCached){ document.getElementById('stormBanner').classList.add('show'); document.getElementById('stormText').innerHTML=warn.text; }
+
+  lastData = {locName:loc.name, waveH, windKmh, windDeg, temp, precip, status};
+  currentSummary = `${loc.name} এলাকার বর্তমান অবস্থা: ${statusText(status)}। ঢেউয়ের উচ্চতা ${waveH.toFixed(1)} মিটার। বাতাসের গতি ${Math.round(windKmh)} কিলোমিটার প্রতি ঘণ্টা। তাপমাত্রা ${Math.round(temp)} ডিগ্রি সেলসিয়াস। ${statusAdvice(status).replace(/<[^>]+>/g,'')}`;
+
+  let html = `<div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="status-label ${status}">${statusText(status)}</div>
+          <div class="status-sub">${status==='danger'?'আজ সমুদ্রে না যাওয়াই ভালো':status==='caution'?'সতর্ক থেকে যান':'আজ মাছ ধরতে যাওয়া নিরাপদ'}</div>
+        </div>
+        <div>
+          <div class="place-name">${loc.name}</div>
+          <div class="place-time">${isCached ? 'ক্যাশ থেকে' : 'আপডেট: এখন'}</div>
+        </div>
+      </div>
+      <div class="gauge-zone">
+        ${waveGaugeSVG(waveH,status)}
+        <div class="wave-readout"><div class="lbl">ঢেউয়ের উচ্চতা</div><span class="num">${fmt1(waveH)}</span><span class="unit">মিটার</span></div>
+      </div>
+      <div class="ai-summary" id="aiSummaryBox" style="display:none;"><span class="ic">🤖</span><span id="aiSummaryText"></span></div>
+      <div class="data-strip">
+        <div class="data-cell"><div class="lbl">🌡️ তাপমাত্রা</div><div class="val">${fmt0(temp)}° <span>সে.</span></div></div>
+        <div class="data-cell"><div class="lbl">💨 বাতাস</div><div class="val">${fmt0(windKmh)} <span>কিমি/ঘ</span></div></div>
+        <div class="data-cell"><div class="lbl">দিক</div><div class="val" style="font-size:13px">${windDirLabel(windDeg)}</div></div>
+        <div class="data-cell"><div class="lbl">বৃষ্টি</div><div class="val">${fmt1(precip)} <span>মিমি</span></div></div>
+      </div>
+      <div class="advice-bar">${statusAdvice(status)}<br><button class="voice-btn" onclick="speakStatus()">🔊 শুনুন</button></div>
+    </div>`;
+  content.innerHTML = html;
+}
+
+function speakStatus(){
+  if(!('speechSynthesis' in window) || !currentSummary) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(currentSummary);
+  utter.lang='bn-BD'; utter.rate=0.95;
+  window.speechSynthesis.speak(utter);
+}
+
+window.addEventListener('online', ()=>{ document.getElementById('offlineBanner').classList.remove('show'); loadData(activeIndex>=0?LOCATIONS[activeIndex]:LOCATIONS[0]); });
+window.addEventListener('offline', ()=>{ document.getElementById('offlineBanner').classList.add('show'); document.getElementById('offlineText').textContent='অফলাইন — ইন্টারনেট সংযোগ নেই'; });
+
+/* ---- GPS shelter/harbor finder ---- */
+let userLoc = null;
+function mapsSearchUrl(term, lat, lon){
+  return `https://www.google.com/maps/search/${encodeURIComponent(term)}/@${lat},${lon},14z`;
+}
+document.getElementById('gpsBtn').addEventListener('click', ()=>{
+  const dot=document.getElementById('gpsDot');
+  const txt=document.getElementById('gpsStatusText');
+  if(!navigator.geolocation){ txt.textContent='এই ব্রাউজারে GPS সমর্থিত নয়'; return; }
+  if(location.protocol !== 'https:'){ txt.textContent='GPS চালাতে হলে সাইটটি https:// দিয়ে খুলতে হবে'; return; }
+  txt.textContent='অবস্থান শনাক্ত করা হচ্ছে…';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const {latitude:lat, longitude:lon} = pos.coords;
+    userLoc = {lat, lon};
+    dot.classList.add('on');
+    txt.textContent='অবস্থান পাওয়া গেছে ✓';
+    document.getElementById('lnkHarbor').href = mapsSearchUrl('মাছ ঘাট boat harbor', lat, lon);
+    document.getElementById('lnkShelter').href = mapsSearchUrl('cyclone shelter আশ্রয়কেন্দ্র', lat, lon);
+    document.getElementById('lnkCoastguard').href = mapsSearchUrl('coast guard station', lat, lon);
+    document.getElementById('lnkHospital').href = mapsSearchUrl('hospital হাসপাতাল', lat, lon);
+    document.querySelectorAll('.gps-link').forEach(el=>el.classList.add('active'));
+    if(safetyMapInstance){ updateUserOnMap(); }
+  }, (err)=>{
+    if(err.code === 1) txt.textContent='❌ অনুমতি দেওয়া হয়নি — ব্রাউজারের সেটিংসে গিয়ে এই সাইটের জন্য Location অনুমতি চালু করুন';
+    else if(err.code === 2) txt.textContent='❌ অবস্থান পাওয়া যায়নি — ফোনের GPS/Location চালু আছে কিনা দেখুন';
+    else txt.textContent='❌ সময় শেষ — আবার চেষ্টা করুন (খোলা আকাশের নিচে সিগন্যাল ভালো পাওয়া যায়)';
+  }, {enableHighAccuracy:true, timeout:15000, maximumAge:0});
+});
+
+/* ---- Safe route map ---- */
+let safetyMapInstance=null;
+let userMarker=null, routeLine=null;
+const locMarkers=[];
+
+function haversineKm(lat1,lon1,lat2,lon2){
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function bearingLabel(lat1,lon1,lat2,lon2){
+  const toRad=d=>d*Math.PI/180, toDeg=r=>r*180/Math.PI;
+  const y=Math.sin(toRad(lon2-lon1))*Math.cos(toRad(lat2));
+  const x=Math.cos(toRad(lat1))*Math.sin(toRad(lat2)) - Math.sin(toRad(lat1))*Math.cos(toRad(lat2))*Math.cos(toRad(lon2-lon1));
+  let brng=(toDeg(Math.atan2(y,x))+360)%360;
+  const dirs=['উত্তর','উত্তর-পূর্ব','পূর্ব','দক্ষিণ-পূর্ব','দক্ষিণ','দক্ষিণ-পশ্চিম','পশ্চিম','উত্তর-পশ্চিম'];
+  return dirs[Math.round(brng/45)%8];
+}
+
+async function fetchLocStatus(loc){
+  try{
+    const [m,w] = await Promise.all([
+      fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wave_height&timezone=Asia%2FDhaka&forecast_days=1`),
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,weathercode,precipitation&timezone=Asia%2FDhaka&forecast_days=1`)
+    ]);
+    const mj=await m.json(), wj=await w.json();
+    const now=new Date(); const nowIso=now.toISOString().slice(0,13);
+    let idx=0; const times=mj.hourly.time;
+    for(let i=0;i<times.length;i++){ if(times[i].slice(0,13)>=nowIso){ idx=i; break; } }
+    const waveH=mj.hourly.wave_height[idx] ?? mj.hourly.wave_height[0];
+    const windKmh=wj.hourly.wind_speed_10m[idx] ?? wj.hourly.wind_speed_10m[0];
+    const wcode=wj.hourly.weathercode[idx] ?? 0;
+    const precip=wj.hourly.precipitation[idx] ?? 0;
+    return {...loc, waveH, windKmh, status: statusFromValues(waveH,windKmh,wcode,precip)};
+  }catch(e){
+    return {...loc, waveH:null, windKmh:null, status:'unknown'};
+  }
+}
+
+function updateUserOnMap(){
+  if(!safetyMapInstance || !userLoc) return;
+  if(userMarker) safetyMapInstance.removeLayer(userMarker);
+  userMarker = L.circleMarker([userLoc.lat, userLoc.lon], {radius:9, color:'#EAF4F2', weight:2, fillColor:'#2FA8A0', fillOpacity:1}).addTo(safetyMapInstance).bindPopup('আপনার অবস্থান');
+
+  const withStatus = locMarkers.filter(m=>m.data.status==='safe');
+  const routeInfo = document.getElementById('routeInfo');
+  routeInfo.style.display='block';
+
+  if(routeLine){ safetyMapInstance.removeLayer(routeLine); routeLine=null; }
+
+  if(withStatus.length===0){
+    routeInfo.classList.add('warn');
+    routeInfo.innerHTML = `<b>⚠️ আশেপাশের কোনো এলাকা এই মুহূর্তে "নিরাপদ" নয়।</b> সাগরে থাকলে দ্রুত নিকটবর্তী আশ্রয়কেন্দ্রে ফিরুন।<br><a class="directions-btn" href="${mapsSearchUrl('cyclone shelter আশ্রয়কেন্দ্র', userLoc.lat, userLoc.lon)}" target="_blank">🛟 নিকটবর্তী আশ্রয়কেন্দ্র খুঁজুন</a>`;
+    return;
+  }
+  let nearest=null, nearestDist=Infinity;
+  withStatus.forEach(m=>{
+    const d=haversineKm(userLoc.lat,userLoc.lon,m.data.lat,m.data.lon);
+    if(d<nearestDist){ nearestDist=d; nearest=m; }
+  });
+  routeLine = L.polyline([[userLoc.lat,userLoc.lon],[nearest.data.lat,nearest.data.lon]], {color:'#4FCB8F', weight:3, dashArray:'6 6'}).addTo(safetyMapInstance);
+  safetyMapInstance.fitBounds(routeLine.getBounds(), {padding:[30,30]});
+  routeInfo.classList.remove('warn');
+  const dir = bearingLabel(userLoc.lat,userLoc.lon,nearest.data.lat,nearest.data.lon);
+  routeInfo.innerHTML = `সবচেয়ে কাছের নিরাপদ এলাকা: <b>${nearest.data.name}</b> — প্রায় ${fmt1(nearestDist)} কিমি দূরে, ${dir} দিকে।<br><a class="directions-btn" href="https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lon}&destination=${nearest.data.lat},${nearest.data.lon}" target="_blank">🧭 দিকনির্দেশনা দেখুন</a>`;
+}
+
+document.getElementById('mapLoadBtn').addEventListener('click', async ()=>{
+  const btn=document.getElementById('mapLoadBtn');
+  btn.textContent='লোড হচ্ছে…'; btn.disabled=true;
+  const results = await Promise.all(LOCATIONS.map(fetchLocStatus));
+
+  document.getElementById('safetyMap').style.display='block';
+  document.getElementById('mapLegend').style.display='flex';
+  btn.style.display='none';
+
+  safetyMapInstance = L.map('safetyMap', {zoomControl:false}).setView([22.0, 90.8], 7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:16
+  }).addTo(safetyMapInstance);
+  L.control.zoom({position:'bottomright'}).addTo(safetyMapInstance);
+
+  const colorFor = s => s==='danger'?'#E85A3E':s==='caution'?'#E8B95C':s==='unknown'?'#8FB0B4':'#4FCB8F';
+  results.forEach(r=>{
+    const marker = L.circleMarker([r.lat,r.lon], {radius:8, color:'#071C2C', weight:1.5, fillColor:colorFor(r.status), fillOpacity:0.9}).addTo(safetyMapInstance);
+    const statusLbl = r.status==='unknown' ? 'তথ্য নেই' : statusText(r.status);
+    marker.bindPopup(`<b>${r.name}</b><br>${statusLbl}${r.waveH!=null?` · ঢেউ ${r.waveH.toFixed(1)}মি · বাতাস ${Math.round(r.windKmh)}কিমি/ঘ`:''}`);
+    locMarkers.push({marker, data:r});
+  });
+
+  if(userLoc){ updateUserOnMap(); }
+});
+
+/* ---- Voice assistant (preset questions, rule-based answers) ---- */
+function answerVoiceQuestion(qid){
+  const box = document.getElementById('voiceAnswer');
+  if(!lastData){
+    box.textContent = 'তথ্য লোড হচ্ছে, একটু পর আবার চেষ্টা করুন।';
+    box.classList.add('show');
+    return;
+  }
+  let text = '';
+  switch(qid){
+    case 'safe':
+      text = `${lastData.locName}-এ বর্তমানে অবস্থা: ${statusText(lastData.status)}। ${statusAdvice(lastData.status).replace(/<[^>]+>/g,'')}`;
+      break;
+    case 'wind':
+      text = `${lastData.locName}-এ এখন বাতাসের গতি ${fmt0(lastData.windKmh)} কিলোমিটার প্রতি ঘণ্টা, ${windDirLabel(lastData.windDeg)} দিক থেকে।`;
+      break;
+    case 'wave':
+      text = `${lastData.locName}-এ এখন ঢেউয়ের উচ্চতা ${fmt1(lastData.waveH)} মিটার।`;
+      break;
+    case 'temp':
+      text = `${lastData.locName}-এ এখন তাপমাত্রা ${fmt0(lastData.temp)} ডিগ্রি সেলসিয়াস।`;
+      break;
+    case 'tide':
+      text = `জোয়ার-ভাটার সঠিক সময় এলাকাভেদে ভিন্ন হয়, তাই আমি সঠিক সময় বলতে পারি না। নিচে "জোয়ার-ভাটা" অংশে বন্দর কর্তৃপক্ষের সরকারি লিংক দেওয়া আছে, সেখান থেকে দেখে নিন।`;
+      break;
+    case 'trend':
+      text = lastData.aiSummary || 'সারাদিনের প্রবণতার তথ্য এখনো তৈরি হয়নি, একটু পর আবার চেষ্টা করুন।';
+      break;
+  }
+  box.textContent = text;
+  box.classList.add('show');
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang='bn-BD'; utter.rate=0.95;
+    window.speechSynthesis.speak(utter);
+  }
+}
+document.querySelectorAll('.voice-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=> answerVoiceQuestion(chip.dataset.q));
+});
+
+/* ---- SOS ---- */
+const sosContactInput = document.getElementById('sosContact');
+sosContactInput.value = localStorage.getItem('sos_contact') || '';
+document.getElementById('sosSaveBtn').addEventListener('click', ()=>{
+  localStorage.setItem('sos_contact', sosContactInput.value.trim());
+  const b=document.getElementById('sosSaveBtn');
+  b.textContent='✓ সংরক্ষিত'; setTimeout(()=>{ b.textContent='সংরক্ষণ'; }, 1500);
+});
+
+document.getElementById('sosBtn').addEventListener('click', ()=>{
+  const btn=document.getElementById('sosBtn');
+  if(!navigator.geolocation){ alert('এই ব্রাউজারে GPS সমর্থিত নয়'); return; }
+  btn.textContent='📍 অবস্থান নেওয়া হচ্ছে…'; btn.disabled=true;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    btn.textContent='🆘 SOS পাঠান'; btn.disabled=false;
+    const {latitude:lat, longitude:lon} = pos.coords;
+    const mapsLink = `https://maps.google.com/?q=${lat},${lon}`;
+    const timeStr = new Date().toLocaleString('bn-BD',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'});
+    const message = `🆘 আমি বিপদে আছি। আমার অবস্থান: ${mapsLink} সময়: ${timeStr}`;
+    document.getElementById('sosMsg').textContent = message;
+    document.getElementById('sosResult').style.display='block';
+
+    const contact = (localStorage.getItem('sos_contact')||'').replace(/[^0-9+]/g,'');
+    const waNum = contact ? contact.replace(/^0/,'88').replace('+','') : '';
+    document.getElementById('sosWa').href = `https://wa.me/${waNum}?text=${encodeURIComponent(message)}`;
+    document.getElementById('sosSms').href = `sms:${contact}?body=${encodeURIComponent(message)}`;
+
+    document.getElementById('sosShare').onclick = ()=>{
+      if(navigator.share){ navigator.share({title:'SOS', text: message}).catch(()=>{}); }
+      else{ navigator.clipboard.writeText(message).then(()=>alert('বার্তা কপি হয়েছে, এখন যেকোনো অ্যাপে পেস্ট করুন')); }
+    };
+    document.getElementById('sosCopy').onclick = ()=>{
+      navigator.clipboard.writeText(message).then(()=>{
+        const c=document.getElementById('sosCopy'); c.textContent='✓ কপি হয়েছে'; setTimeout(()=>{c.textContent='🔗 বার্তা কপি করুন';},1500);
+      });
+    };
+  }, ()=>{
+    btn.textContent='🆘 SOS পাঠান'; btn.disabled=false;
+    alert('অবস্থান পাওয়া যায়নি। ফোনের লোকেশন চালু করুন।');
+  }, {enableHighAccuracy:true, timeout:10000});
+});
+
+/* ---- Compass ---- */
+let compassActive=false;
+function bearingDeg(lat1,lon1,lat2,lon2){
+  const toRad=d=>d*Math.PI/180, toDeg=r=>r*180/Math.PI;
+  const y=Math.sin(toRad(lon2-lon1))*Math.cos(toRad(lat2));
+  const x=Math.cos(toRad(lat1))*Math.sin(toRad(lat2)) - Math.sin(toRad(lat1))*Math.cos(toRad(lat2))*Math.cos(toRad(lon2-lon1));
+  return (toDeg(Math.atan2(y,x))+360)%360;
+}
+function handleOrientation(e){
+  let heading = (e.webkitCompassHeading!=null) ? e.webkitCompassHeading : (e.alpha!=null ? (360-e.alpha) : null);
+  if(heading==null) return;
+  document.getElementById('compassRose').style.transform = `rotate(${-heading}deg)`;
+  document.getElementById('compassHeading').textContent = `${toBn(Math.round(heading))}°`;
+
+  const targetEl=document.getElementById('compassTarget');
+  const lbl=document.getElementById('compassTargetLbl');
+  if(userLoc && locMarkers.length){
+    const safeOnes = locMarkers.filter(m=>m.data.status==='safe');
+    if(safeOnes.length){
+      let nearest=null, nd=Infinity;
+      safeOnes.forEach(m=>{ const d=haversineKm(userLoc.lat,userLoc.lon,m.data.lat,m.data.lon); if(d<nd){nd=d; nearest=m;} });
+      const brg = bearingDeg(userLoc.lat,userLoc.lon,nearest.data.lat,nearest.data.lon);
+      targetEl.style.display='block';
+      targetEl.style.transform = `translate(-50%,-100%) rotate(${brg}deg)`;
+      lbl.textContent = `🟢 ${nearest.data.name} এই দিকে (${toBn(Math.round(brg))}°)`;
+    } else {
+      lbl.textContent = 'আশেপাশে নিরাপদ এলাকা পাওয়া যায়নি';
+    }
+  } else {
+    lbl.textContent = '"মানচিত্র দেখুন" ও GPS চালু করলে নিরাপদ দিক দেখাবে';
+  }
+}
+document.getElementById('compassBtn').addEventListener('click', async ()=>{
+  if(location.protocol !== 'https:'){ alert('কম্পাস চালাতে হলে সাইটটি https:// দিয়ে খুলতে হবে'); return; }
+  if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+    try{
+      const res = await DeviceOrientationEvent.requestPermission();
+      if(res !== 'granted'){ alert('কম্পাস চালাতে "Motion & Orientation" অনুমতি প্রয়োজন — ব্রাউজার সেটিংসে গিয়ে অনুমতি দিন'); return; }
+    }catch(e){ alert('কম্পাস চালু করা যায়নি: '+e.message); return; }
+  }
+  document.getElementById('compassWrap').style.display='block';
+  document.getElementById('compassHeading').style.display='block';
+  document.getElementById('compassHeading').textContent='সংকেত খোঁজা হচ্ছে…';
+  document.getElementById('compassBtn').style.display='none';
+
+  let gotSignal=false;
+  const markSignal=()=>{ gotSignal=true; };
+  if(!compassActive){
+    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+    window.addEventListener('deviceorientation', handleOrientation, true);
+    window.addEventListener('deviceorientationabsolute', markSignal, {once:true});
+    window.addEventListener('deviceorientation', markSignal, {once:true});
+    compassActive=true;
+  } else {
+    gotSignal = true;
+  }
+  setTimeout(()=>{
+    if(!gotSignal){
+      document.getElementById('compassHeading').textContent='সংকেত পাওয়া যায়নি';
+      document.getElementById('compassTargetLbl').textContent='⚠️ এই ফোন/ব্রাউজারে কম্পাস সেন্সর সমর্থিত নয়, অথবা Chrome-এর সাইট সেটিংসে "Motion sensors" বন্ধ আছে। Settings → Site settings → Motion sensors চালু করে আবার চেষ্টা করুন।';
+    }
+  }, 2500);
+});
+
+/* ---- AI-style one-line summary (rule-based, not real ML) ---- */
+function buildAISummaryText(times, waveArr, windArr, currentStatus){
+  if(!times.length) return '';
+  const hourNums = times.map(t=>new Date(t).getHours());
+  // find first hour index where status crosses to a worse level, and first where it returns to safe
+  const statuses = waveArr.map((w,i)=>statusFromValues(w, windArr[i], 0, 0));
+  let worsenAt=-1, improveAt=-1;
+  const rank = s => s==='danger'?2:s==='caution'?1:0;
+  const startRank = rank(currentStatus);
+  for(let i=1;i<statuses.length;i++){
+    if(worsenAt===-1 && rank(statuses[i])>startRank){ worsenAt=i; }
+    if(worsenAt!==-1 && improveAt===-1 && i>worsenAt && rank(statuses[i])<rank(statuses[worsenAt])){ improveAt=i; }
+  }
+  const hourLabel = h => `${toBn(h % 12 === 0 ? 12 : h % 12)}টা ${h<12?'সকাল':h<15?'দুপুর':h<18?'বিকেল':'রাত'}`;
+
+  if(worsenAt>0){
+    let msg = `আজ ${hourLabel(hourNums[worsenAt])}র পর থেকে বাতাস/ঢেউ বাড়তে পারে`;
+    if(improveAt>0){ msg += `, ${hourLabel(hourNums[improveAt])}র মধ্যে আবার স্বাভাবিক হতে পারে — এর আগেই ফিরে আসা ভালো`; }
+    else{ msg += ` — সেই সময়ের মধ্যে ফিরে আসা নিরাপদ`; }
+    return msg;
+  }
+  if(currentStatus==='danger'){
+    return 'বর্তমানে অবস্থা ঝুঁকিপূর্ণ — আজকের বাকি সময়েও উন্নতির স্পষ্ট লক্ষণ নেই, সাগরে না যাওয়াই ভালো।';
+  }
+  if(currentStatus==='caution'){
+    return 'আজ সারাদিন মোটামুটি একই রকম সতর্কতামূলক অবস্থা থাকতে পারে — অভিজ্ঞ নৌকা সাবধানে যেতে পারে।';
+  }
+  return 'আজ সারাদিনই আবহাওয়া মোটামুটি স্থিতিশীল থাকার সম্ভাবনা — তবু যাওয়ার আগে একবার দেখে নিন।';
+}
+
+/* ---- 24hr trend chart ---- */
+function buildTrendChart(times, waveArr, windArr){
+  if(!times.length) return '';
+  const W=340, H=70, pad=6;
+  const maxWave = Math.max(2, ...waveArr.map(v=>v||0));
+  const maxWind = Math.max(30, ...windArr.map(v=>v||0));
+  const stepX = (W-2*pad)/(times.length-1 || 1);
+  const pathFor = (arr, max) => arr.map((v,i)=>{
+    const x = pad + i*stepX;
+    const y = H - pad - ((v||0)/max)*(H-2*pad);
+    return `${i===0?'M':'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const wavePath = pathFor(waveArr, maxWave);
+  const windPath = pathFor(windArr, maxWind);
+  // hour tick labels every 6 hours
+  let ticks='';
+  for(let i=0;i<times.length;i+=6){
+    const h = new Date(times[i]).getHours();
+    const x = pad + i*stepX;
+    ticks += `<text x="${x.toFixed(1)}" y="${H-1}" font-size="8" fill="#8FB0B4" text-anchor="middle">${toBn(h)}:০০</text>`;
+  }
+  return `<div class="trend-wrap">
+    <div class="trend-title">আগামী ২৪ ঘণ্টার ঢেউ ও বাতাসের প্রবণতা</div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      <path d="${wavePath}" fill="none" stroke="#2FA8A0" stroke-width="2"/>
+      <path d="${windPath}" fill="none" stroke="#E8B95C" stroke-width="2"/>
+      ${ticks}
+    </svg>
+    <div class="trend-legend">
+      <span><i style="background:#2FA8A0"></i>ঢেউ (সর্বোচ্চ ${fmt1(maxWave)}মি)</span>
+      <span><i style="background:#E8B95C"></i>বাতাস (সর্বোচ্চ ${fmt0(maxWind)}কিমি/ঘ)</span>
+    </div>
+  </div>`;
+}
+
+/* ---- Safety checklist ---- */
+const CHECKLIST_ITEMS = [
+  {id:'life_jacket', label:'সবার জন্য লাইফ জ্যাকেট আছে'},
+  {id:'fuel', label:'পর্যাপ্ত জ্বালানি আছে'},
+  {id:'phone', label:'মোবাইল ফোন পুরোপুরি চার্জ করা'},
+  {id:'weather_checked', label:'আজকের আবহাওয়া ও ঢেউয়ের অবস্থা দেখা হয়েছে'},
+  {id:'family_informed', label:'পরিবারকে যাত্রার কথা জানানো হয়েছে'},
+  {id:'first_aid', label:'প্রাথমিক চিকিৎসার বক্স সাথে আছে'},
+  {id:'water_food', label:'পর্যাপ্ত খাবার পানি ও খাবার সাথে আছে'},
+  {id:'anchor_rope', label:'নোঙর ও দড়ি ঠিক আছে'},
+  {id:'engine_check', label:'ইঞ্জিন/হাল পরীক্ষা করা হয়েছে'},
+];
+const CHECKLIST_KEY='sos_checklist_state';
+function loadChecklistState(){ try{ return JSON.parse(localStorage.getItem(CHECKLIST_KEY))||{}; }catch(e){ return {}; } }
+function saveChecklistState(s){ try{ localStorage.setItem(CHECKLIST_KEY, JSON.stringify(s)); }catch(e){} }
+function renderChecklist(){
+  const state = loadChecklistState();
+  const wrap = document.getElementById('checklistItems');
+  wrap.innerHTML = CHECKLIST_ITEMS.map(item=>{
+    const checked = !!state[item.id];
+    return `<div class="checklist-item ${checked?'checked':''}" data-id="${item.id}">
+      <div class="checklist-box">${checked?'✓':''}</div>
+      <div class="checklist-label">${item.label}</div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.checklist-item').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const s = loadChecklistState();
+      s[el.dataset.id] = !s[el.dataset.id];
+      saveChecklistState(s);
+      renderChecklist();
+    });
+  });
+  const doneCount = CHECKLIST_ITEMS.filter(i=>state[i.id]).length;
+  const pct = Math.round((doneCount/CHECKLIST_ITEMS.length)*100);
+  document.getElementById('checklistBarFill').style.width = pct+'%';
+  document.getElementById('checklistPct').textContent = toBn(pct)+'%';
+}
+document.getElementById('checklistReset').addEventListener('click', ()=>{
+  saveChecklistState({});
+  renderChecklist();
+});
+
+/* ---- Fishing ban calendar ---- */
+function dateStatus(start, end){
+  const now = new Date();
+  const s = new Date(start), e = new Date(end);
+  e.setHours(23,59,59,999);
+  if(now>=s && now<=e){
+    const daysLeft = Math.ceil((e-now)/86400000);
+    return {active:true, text:`চলছে — আর ${toBn(daysLeft)} দিন বাকি`};
+  }
+  if(now<s){
+    const daysTo = Math.ceil((s-now)/86400000);
+    return {active:false, text:`শুরু হবে ${toBn(daysTo)} দিন পর`};
+  }
+  return {active:false, text:'এই মেয়াদ শেষ হয়েছে'};
+}
+function renderBanCalendar(){
+  const bans = [
+    {
+      title:'সামুদ্রিক মাছ ধরা নিষেধাজ্ঞা (সব প্রজাতি)',
+      dateLabel:'১৫ এপ্রিল – ১১ জুন, ২০২৬',
+      start:'2026-04-15', end:'2026-06-11',
+      note:'বাংলাদেশের সমুদ্রসীমায় সবধরনের নৌযানে সব প্রজাতির মাছ ধরা সম্পূর্ণ নিষিদ্ধ।'
+    },
+    {
+      title:'জাটকা (ছোট ইলিশ) ধরা নিষিদ্ধ',
+      dateLabel:'১ নভেম্বর – ৩০ জুন (প্রতি বছর)',
+      start:'2025-11-01', end:'2026-06-30',
+      note:'২৫ সেন্টিমিটারের ছোট ইলিশ ধরা, বিক্রি, পরিবহন ও মজুত নিষিদ্ধ।'
+    },
+  ];
+  const wrap = document.getElementById('banCalendar');
+  let html = bans.map(b=>{
+    const st = dateStatus(b.start, b.end);
+    return `<div class="ban-item">
+      <div class="ban-status-dot ${st.active?'active':'inactive'}"></div>
+      <div>
+        <div class="ban-title">${b.title}</div>
+        <div class="ban-date">${b.dateLabel}</div>
+        <div class="ban-state ${st.active?'active':'inactive'}">${st.active?'🔴':'⚪'} ${st.text}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${b.note}</div>
+      </div>
+    </div>`;
+  }).join('');
+  html += `<div class="ban-item">
+    <div class="ban-status-dot inactive"></div>
+    <div>
+      <div class="ban-title">ইলিশের মূল প্রজনন মৌসুম নিষেধাজ্ঞা</div>
+      <div class="ban-date">সাধারণত অক্টোবরে ~২২ দিন (প্রতি বছর নতুন করে ঘোষণা হয়)</div>
+      <div class="ban-state inactive">⚪ ২০২৬ সালের সঠিক তারিখ এখনো ঘোষণা হয়নি</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">সরকারি ঘোষণার জন্য <a href="https://fisheries.gov.bd" target="_blank" rel="noopener" style="color:var(--teal);">মৎস্য অধিদপ্তরের ওয়েবসাইট</a> দেখুন।</div>
+    </div>
+  </div>`;
+  wrap.innerHTML = html;
+}
+
+/* ---- PWA install ---- */
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('installBanner');
+const installText = document.getElementById('installText');
+const installBtn = document.getElementById('installBtn');
+
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+if(!isStandalone() && localStorage.getItem('install_dismissed') !== '1'){
+  if(isIOS){
+    installText.innerHTML = '<b>হোম স্ক্রিনে ইনস্টল করুন</b>Safari-র নিচের 📤 শেয়ার বাটনে চাপুন, তারপর "Add to Home Screen" বেছে নিন';
+    installBtn.style.display='none';
+    installBanner.classList.add('show');
+  } else {
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      installBanner.classList.add('show');
+    });
+  }
+}
+installBtn.addEventListener('click', async ()=>{
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installBanner.classList.remove('show');
+});
+document.getElementById('installClose').addEventListener('click', ()=>{
+  installBanner.classList.remove('show');
+  localStorage.setItem('install_dismissed','1');
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+/* ---- First aid guide ---- */
+function renderAidGuide(){
+  const items = [
+    {
+      icon:'🌊', title:'পানিতে ডুবে যাওয়া',
+      body:`<ol>
+        <li>আক্রান্ত ব্যক্তিকে পানি থেকে তুলে নিরাপদ, সমতল জায়গায় শুইয়ে দিন</li>
+        <li>শ্বাস চলছে কিনা দেখুন — বুক ওঠানামা করছে কিনা লক্ষ্য করুন</li>
+        <li>শ্বাস না চললে দ্রুত বুকে চাপ দিন (CPR জানা থাকলে), না জানলেও চেষ্টা করুন — কিছু না করার চেয়ে ভালো</li>
+        <li>শ্বাস ফিরে এলেও তাকে পাশ ফিরিয়ে শুইয়ে রাখুন, একা রাখবেন না</li>
+        <li><b>যত দ্রুত সম্ভব ৯৯৯-এ কল করুন বা নিকটবর্তী হাসপাতালে নিন</b>, শ্বাস স্বাভাবিক মনে হলেও</li>
+      </ol>`
+    },
+    {
+      icon:'🩸', title:'কাটা-ছেঁড়া ও রক্তক্ষরণ',
+      body:`<ol>
+        <li>পরিষ্কার কাপড় বা গজ দিয়ে ক্ষতস্থানে সরাসরি ও শক্ত করে চাপ দিন</li>
+        <li>রক্ত বন্ধ না হওয়া পর্যন্ত চাপ ধরে রাখুন (৫-১০ মিনিট), বারবার সরিয়ে দেখবেন না</li>
+        <li>সম্ভব হলে ক্ষতস্থান হৃদয়ের উচ্চতার উপরে তুলে রাখুন</li>
+        <li>রক্ত বন্ধ হলে পরিষ্কার কাপড় দিয়ে বেঁধে রাখুন</li>
+        <li>রক্তক্ষরণ বেশি বা বন্ধ না হলে দ্রুত হাসপাতালে নিন</li>
+      </ol>`
+    },
+    {
+      icon:'🪼', title:'জেলিফিশ / সামুদ্রিক প্রাণীর হুল',
+      body:`<ol>
+        <li>ক্ষতস্থান সমুদ্রের লবণ পানি দিয়ে ধুয়ে ফেলুন (মিঠা পানি বা ঘষাঘষি করবেন না, এতে বিষ আরও ছড়াতে পারে)</li>
+        <li>দৃশ্যমান কাঁটা/টেন্টাকল থাকলে সাবধানে সরিয়ে ফেলুন (খালি হাতে না ধরে কিছু দিয়ে)</li>
+        <li>ব্যথা কমাতে গরম পানির (সহনীয় তাপমাত্রায়) সেঁক দিতে পারেন</li>
+        <li>শ্বাসকষ্ট, তীব্র ফোলাভাব, বা সারা শরীরে প্রতিক্রিয়া দেখা দিলে দ্রুত হাসপাতালে নিন</li>
+      </ol>`
+    },
+    {
+      icon:'☀️', title:'রোদে অসুস্থতা / হিট স্ট্রোক',
+      body:`<ol>
+        <li>আক্রান্ত ব্যক্তিকে দ্রুত ছায়ায় বা ঠান্ডা জায়গায় নিয়ে যান</li>
+        <li>অতিরিক্ত কাপড় খুলে দিন, শরীরে পানি দিয়ে ভিজিয়ে বাতাস করুন</li>
+        <li>সজ্ঞান থাকলে অল্প অল্প করে পানি বা স্যালাইন পান করান (একসাথে বেশি না)</li>
+        <li>বমি ভাব, প্রচণ্ড মাথা ঘোরা, বা অজ্ঞান হয়ে গেলে দ্রুত হাসপাতালে নিন — এটা জরুরি অবস্থা</li>
+      </ol>`
+    },
+  ];
+  document.getElementById('aidGuide').innerHTML = items.map((it,i)=>`
+    <div class="aid-item" data-idx="${i}">
+      <div class="aid-head">
+        <div class="ic">${it.icon}</div>
+        <div class="tt">${it.title}</div>
+        <div class="arrow">▾</div>
+      </div>
+      <div class="aid-body">${it.body}</div>
+    </div>`).join('') + `<div class="aid-disclaimer">এই নির্দেশিকা সাধারণ প্রাথমিক চিকিৎসার ধারণা দেয়, এটি ডাক্তারের পরামর্শের বিকল্প নয়। গুরুতর পরিস্থিতিতে সবসময় দ্রুত পেশাদার চিকিৎসা সেবা নিন — ৯৯৯।</div>`;
+
+  document.querySelectorAll('.aid-head').forEach(head=>{
+    head.addEventListener('click', ()=>{
+      head.closest('.aid-item').classList.toggle('open');
+    });
+  });
+}
+
+document.getElementById('printCardBtn').addEventListener('click', ()=>{
+  window.print();
+});
+
+renderAidGuide();
+renderChecklist();
+renderBanCalendar();
+renderChips();
+loadData(LOCATIONS[0]);
+</script>
+</body>
+</html>
